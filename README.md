@@ -1,5 +1,6 @@
 # University AI project
 
+![Example Output](https://github.com/shervindadashzade/university-ai/blob/master/example_output.png)
 ### Purpose of Question
 
 we have some units with a unique number, capacity of energy that can produce and a number of intervals needs for maintenancing the unit.
