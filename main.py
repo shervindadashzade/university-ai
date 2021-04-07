@@ -4,12 +4,12 @@ import random
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+import math
+NUM_OF_RUN = 70
 
-NUM_OF_RUN = 15
 
-
-fineness_list = []
-
+fineness_list_hill_climbing = []
+fineness_list_simulate_anealing = []
 ### create random state with some conditions
 def randomStateGenerator():
     state = []
@@ -62,15 +62,14 @@ def nextStateGenerator(state):
 
 
 def hillClimbingAlgorithem():
+    print("HillClimbing Algorithm running ...")
     best_state = 0
     best_fineness = -1000
-    print("generating intial state ...")
-    init_state = randomStateGenerator()
     print("init state :")
     print(init_state)
     init_fineness = calculateFineness(init_state)
     print("fineness : %d" % (init_fineness))
-    fineness_list.append(init_fineness)
+    fineness_list_hill_climbing.append(init_fineness)
     current_state = init_state
     for run in range(NUM_OF_RUN):
         print("we are on %dth run" % (run))
@@ -97,7 +96,63 @@ def hillClimbingAlgorithem():
                 current_state = randomStateGenerator()
                 fineness = calculateFineness(current_state)
                 print("created a new init state with fineness : %d" %(fineness))
-        fineness_list.append(fineness)
+        fineness_list_hill_climbing.append(fineness)
+        print("state :")
+        print(current_state)
+    print("------------------------------------------------------------------------")
+    print("after %d runs best fineness is : %d" % (run,best_fineness))
+    print("best state :")
+    print(best_state)
+
+def simulatedAnnealing():
+    print("Simulated Anealing Algorithm")
+    temp = 100
+    best_state = 0
+    best_fineness = -1000
+    print("init state :")
+    print(init_state)
+    init_fineness = calculateFineness(init_state)
+    print("fineness : %d" % (init_fineness))
+    fineness_list_simulate_anealing.append(init_fineness)
+    current_state = init_state
+    fineness = -1000
+    for run in range(NUM_OF_RUN):
+        print("we are on %dth run with temp = %f" % (run,temp))
+        # create 7 state every step and select biggest fineness value
+        neighbours = []
+        for i in range(0,7):
+            new_state = nextStateGenerator(current_state)
+            neighbours.append(new_state)
+        index=0
+        selected = False
+        for i in range(0,3):
+            fineness_calc = calculateFineness(neighbours[i])
+            if(fineness_calc > fineness):
+                fineness = fineness_calc
+                index=i
+                selected = True
+                break
+            else:
+                p = math.exp(-1*(abs(fineness_calc)/temp))
+                print("a worse step with fineness : %d and probality : %f" % (fineness,p))
+                if(random.random() <= p):
+                    print("bad state selected")
+                    fineness = fineness_calc
+                    index = i
+                    selected = True
+                    break
+        if(selected):
+                print("moved to next neighbour with fineness : %d" % (fineness))
+                current_state = neighbours[index]
+                if(fineness > best_fineness):
+                    best_fineness = fineness
+                    best_state = current_state
+        else:
+                current_state = randomStateGenerator()
+                fineness = calculateFineness(current_state)
+                print("created a new init state with fineness : %d" %(fineness))
+        temp *= 0.9
+        fineness_list_simulate_anealing.append(fineness)
         print("state :")
         print(current_state)
     print("------------------------------------------------------------------------")
@@ -108,8 +163,11 @@ def hillClimbingAlgorithem():
 def showOnPlot():
     xaxis = range(0,NUM_OF_RUN+1)
     flg,ax = plt.subplots()
-    ax.plot(xaxis,fineness_list)
+    ax.plot(xaxis,fineness_list_hill_climbing,label="hill climbing")
+    ax.plot(xaxis,fineness_list_simulate_anealing,label="simulated anealing")
     ax.set(xlabel="number of run",ylabel="fineness value",title="various of fineness in diffrent runs")
+    ax.grid()
+    ax.legend()
     plt.show()
 ## read input files
 reader = ReadInputs()
@@ -124,5 +182,15 @@ reader.showIntervals()
 units_len = len(reader.units)
 Interval_len = len(reader.intervals)
 
+
+print("generating intial state ...")
+init_state = randomStateGenerator()
+
 hillClimbingAlgorithem()
+print("------------------------------------------------------------------------")
+print("\n")
+print("------------------------------------------------------------------------")
+
+simulatedAnnealing()
 showOnPlot()
+
