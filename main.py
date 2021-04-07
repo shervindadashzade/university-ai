@@ -5,7 +5,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import math
-NUM_OF_RUN = 70
+NUM_OF_RUN = 30
 
 
 fineness_list_hill_climbing = []
