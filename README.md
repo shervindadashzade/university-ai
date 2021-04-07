@@ -3,26 +3,26 @@
 ![Example Output](https://github.com/shervindadashzade/university-ai/blob/master/example_output.png)
 ### Purpose of Question
 
-we have some units with a unique number, capacity of energy that can produce and a number of intervals needs for maintenancing the unit.
-also we have some intervals with a number and a minimum energy that should suppied by units.
+we have some units with a unique number, the capacity of energy that can produce and the number of intervals needs for maintaining the unit.
+also, we have some intervals with a number and minimum energy that should be supplied by units.
 
-__important point:__ maintenancing intervals should be behind together
+__important point:__ maintenance intervals should be behind together
 
 ### input files
-our input files includes two files with the name intervals.txt and units.txt
+our input files include two files with the name intervals.txt and units.txt
 
 #### units.txt :
- - first line includes number of units
+ - first line includes the number of units
  - every 3 lines describe a unit with this format:
  - first line is the unique number of unit
- - second line is capacity of energy that unit can produce
- - third line is number of intervals that need for maintenancing unit
+ - second line is the capacity of energy that unit can produce
+ - third line is the number of intervals that need for the maintenance unit
 
 #### intervals.txt :
- - first line includes number of intervals
+ - first line includes the number of intervals
  - every 2 lines describe an interval
- - firt line is number of that interval
- - second line is minimum energy that required for that interval
+ - first line is the number of that interval
+ - second line is the minimum energy required for that interval
 
 ### Algorithms
 we solved this question with 3 local search algorithms :
@@ -35,7 +35,5 @@ we solved this question with 3 local search algorithms :
 
 #### TODO:
 - [ ] add genetic algorithm
-
-
 
 
