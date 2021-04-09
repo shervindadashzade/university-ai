@@ -33,7 +33,4 @@ we solved this question with 3 local search algorithms :
 ### Libraries
  - matplotlib : for showing results on a plot
 
-#### TODO:
-- [ ] add genetic algorithm
-
 
