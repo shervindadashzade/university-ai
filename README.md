@@ -32,10 +32,13 @@ our input files include two files with the name intervals.txt and units.txt
 
 we solved this question with 3 local search algorithms :
 
+
 - Hill Climbing
 - Simulated Annealing
 - Genetic Algorithm
 
 ### Libraries
+ - matplotlib
+
 
 - matplotlib : for showing results on a plot
