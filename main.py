@@ -10,6 +10,7 @@ NUM_OF_RUN = 30
 
 fineness_list_hill_climbing = []
 fineness_list_simulate_anealing = []
+fineness_list_genetic_algorithm = []
 ### create random state with some conditions
 def randomStateGenerator():
     state = []
@@ -160,11 +161,119 @@ def simulatedAnnealing():
     print("best state :")
     print(best_state)
 
+def geneticAlgorithm():
+    
+    for run in range(NUM_OF_RUN+1):
+        pc = 0.7
+        pm = 0.001
+
+        generation = []
+        fineness_of_generation = []
+
+        new_generation = []
+        fineness_of_new_generation = []
+        for i in range(0, 6):
+            generation.append( randomStateGenerator() )
+
+        #print( generation )
+        for i in range(0, 6):
+            fineness_of_generation.append( calculateFineness( generation[i] ) )
+
+        # According to the fineness of every single generation, we set fineness as weight 
+        # of every genaration 
+        weighted_random_generation = random.choices( population=generation , weights=fineness_of_generation , k=6)
+
+        #print( fineness_of_generation )
+        #print( weighted_random_generation )
+        #print('\n')
+
+        # joft joft randomly
+        joft_joft_genarations = []
+
+        for i in range (0, 3):
+            random_number_1 = random.randint(0, len(weighted_random_generation)-1-i*2 )
+
+            # Different random number 
+            while(1):
+                random_number_2 = random.randint(0, len(weighted_random_generation)-1-i*2 )
+                if random_number_1 != random_number_2:
+                    break
+                
+            joft_joft_genarations.append( [weighted_random_generation[random_number_1], weighted_random_generation[random_number_2]] )  
+
+        # Crossover
+        crossover_times = int(pc * 6 / 2)
+        length_of_a_generation = units_len * Interval_len
+        #print( joft_joft_genarations )
+        for i in range(0, crossover_times):
+            new_1 = joft_joft_genarations[i][0][:int(length_of_a_generation/2)] + joft_joft_genarations[i][1][int(length_of_a_generation/2):] 
+            new_generation.append(new_1)
+
+            new_2 = joft_joft_genarations[i][1][:int(length_of_a_generation/2)] + joft_joft_genarations[i][0][int(length_of_a_generation/2):] 
+            new_generation.append(new_2)
+
+
+        for i in range(crossover_times, 3):
+            new_generation.append( joft_joft_genarations[i][0] )
+            new_generation.append( joft_joft_genarations[i][1] )
+
+        # Mutation
+        mutation_times = int(pm * 6)
+        counter_one = 0
+        first_one_flage = True
+        first_one_index = -1
+
+        double_mutation_diffender = []
+
+        for i in range(0, mutation_times):
+            random_num_1 = random.randint(0, len(new_generation)-1 )
+
+            if random_num_1 in double_mutation_diffender:
+                i -= 1
+                continue
+            
+            double_mutation_diffender.append( random_num_1 )
+
+            random_num_2 = random.randint(0, Interval_len-1 )
+
+            for i in range(0, Interval_len):
+                if new_generation[ random_num_1 ][random_num_2*units_len+i] == 1:
+                    counter_one += 1
+
+                if first_one_flage == True:
+                    first_one_index = i
+                    first_one_flage = False
+
+            for i in range(0, Interval_len):
+                if new_generation[ random_num_1 ][random_num_2*units_len+i] == 0:
+                    if counter_one > Interval_len-i:
+                        for i in range (0, counter_one):
+                            new_generation[ random_num_1 ][random_num_2*units_len + first_one_index + i] = 0
+
+                        for i in range(0, Interval_len):
+                            new_generation[ random_num_1 ][random_num_2*units_len+Interval_len-1-i] = 1
+                    else:
+                        for i in range (0, counter_one):
+                            new_generation[ random_num_1 ][random_num_2*units_len + first_one_index + i] = 0
+
+                        for i in range(0, Interval_len):
+                            new_generation[ random_num_1 ][random_num_2*units_len+i] = 1
+
+        fineness_of_new_generation = []
+
+        for i in range(0, len(new_generation) ):
+            fineness_of_new_generation.append( calculateFineness( new_generation[i] ) )
+
+        #print( fineness_of_new_generation )
+
+        fineness_list_genetic_algorithm.append( max(fineness_of_new_generation) )
+
 def showOnPlot():
     xaxis = range(0,NUM_OF_RUN+1)
     flg,ax = plt.subplots()
     ax.plot(xaxis,fineness_list_hill_climbing,label="hill climbing")
     ax.plot(xaxis,fineness_list_simulate_anealing,label="simulated anealing")
+    ax.plot(xaxis,fineness_list_genetic_algorithm,label="genetic algorithm")
     ax.set(xlabel="number of run",ylabel="fineness value",title="various of fineness in diffrent runs")
     ax.grid()
     ax.legend()
@@ -192,5 +301,13 @@ print("\n")
 print("------------------------------------------------------------------------")
 
 simulatedAnnealing()
+
+print("------------------------------------------------------------------------")
+print("\n")
+print("------------------------------------------------------------------------")
+
+geneticAlgorithm()
+#print(fineness_list_genetic_algorithm)
+
 showOnPlot()
 
